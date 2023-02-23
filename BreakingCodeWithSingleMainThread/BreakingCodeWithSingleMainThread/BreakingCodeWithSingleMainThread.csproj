@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="imgs\imgAgent.png" />
+    <None Remove="imgs\imgFish1.png" />
+    <None Remove="imgs\imgFish2.png" />
+    <None Remove="imgs\imgFish3.png" />
+    <None Remove="imgs\imgSkull.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="imgs\imgAgent.png" />
+    <Resource Include="imgs\imgFish1.png" />
+    <Resource Include="imgs\imgFish2.png" />
+    <Resource Include="imgs\imgFish3.png" />
+    <Resource Include="imgs\imgSkull.png" />
+  </ItemGroup> 
+</Project>
