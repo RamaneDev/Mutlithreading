@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BreakingCodeWithSingleMainThread
 {
@@ -29,12 +33,28 @@ namespace BreakingCodeWithSingleMainThread
 
         // The list of Labels of the characters to be broken.
         private List<TextBlock> OutputCharLabels;
-     
+
+        // The list of ProgressBar controls that show the 
+        // progress of the character being decoded
+        private List<ProgressBar> prloProgressChar;
+
         public MainWindow()
         {
             bakCodebreaker.DoWork += bakCodebreaker_DoWork;
+            bakCodebreaker.ProgressChanged += bakCodebreaker_ProgressChanged;
+            bakCodebreaker.WorkerReportsProgress = true;
 
             InitializeComponent();
+
+            // Create a new list of ProgressBar controls that show 
+            // the progress of each character of the code being 
+            // broken
+            prloProgressChar = new List<ProgressBar>(4);
+            // Add the ProgressBar controls to the list
+            prloProgressChar.Add(pgbProgressChar1);
+            prloProgressChar.Add(pgbProgressChar2);
+            prloProgressChar.Add(pgbProgressChar3);
+            prloProgressChar.Add(pgbProgressChar4);
 
             // Generate a random code to be broken
             SimulateCodeGeneration();
@@ -51,7 +71,19 @@ namespace BreakingCodeWithSingleMainThread
             // Hide the fishes game and show the CodeBreaker
             showCodeBreaker();
 
+        }
 
+        private void bakCodebreaker_ProgressChanged(object? sender, ProgressChangedEventArgs e)
+        {
+
+            // This variable will hold a CodeBreakerProgress instance
+            CodeBreakerProgress loCodeBreakerProgress = (CodeBreakerProgress)e.UserState;
+            // Update the corresponding ProgressBar with the percentage received in the as a parameter
+
+             prloProgressChar[loCodeBreakerProgress.CharNumber].Value = loCodeBreakerProgress.PercentageCompleted;
+            // Update the corresponding Label with the character being processed
+             
+            OutputCharLabels[loCodeBreakerProgress.CharNumber].Text = ((char)loCodeBreakerProgress.CharCode).ToString();
         }
 
         private void SimulateCodeGeneration()
@@ -81,27 +113,55 @@ namespace BreakingCodeWithSingleMainThread
             char lcChar;
             // This variable will hold the current Label control that shows the char position being decoded.
 
-            TextBlock loOutputCharCurrentLabel;
+            //TextBlock loOutputCharCurrentLabel;           
+           
+
             for (liCharNumber = 0; liCharNumber < 4; liCharNumber++)
             {
-                loOutputCharCurrentLabel = OutputCharLabels[liCharNumber];
+                // This variable will hold the last percentage of the iteration completed
+                int liOldPercentageCompleted = 0;
+
+                CodeBreakerProgress loCodeBreakerProgress = new CodeBreakerProgress();
+
+                //loOutputCharCurrentLabel = OutputCharLabels[liCharNumber];
                 // This loop will run 65,536 times
                 for (i = 0; i <= 65535; i++)
                 {
                     // myChar holds a Unicode char
                     lcChar = (char)(i);
                     // loOutputCharCurrentLabel.Text = lcChar.ToString();
+                    // This variable will hold a CodeBreakerProgress 
+                    // instance
+                  
 
-                    //Application.DoEvents();
+                    // The percentage completed is calculated and stored in 
+                    // the PercentageCompleted property
+                    loCodeBreakerProgress.PercentageCompleted = (int)((i * 100) / 65535);
+                    loCodeBreakerProgress.CharNumber = liCharNumber;
+                    loCodeBreakerProgress.CharCode = i;
+                    
+                    if (loCodeBreakerProgress.PercentageCompleted > liOldPercentageCompleted)
+                    {                   
+                   
+                            // The progress is reported only when it changes with regard to the last one(liOldPercentageCompleted)
+                            bakCodebreaker.ReportProgress(loCodeBreakerProgress.PercentageCompleted, loCodeBreakerProgress);
+                            // The old percentage completed is now the 
+                            // percentage reported
+                            liOldPercentageCompleted = loCodeBreakerProgress.PercentageCompleted;                  
+                           
+                    }
+                    System.Threading.Thread.Sleep(1);
                     if (checkCodeChar(lcChar, liCharNumber))
                     {
-                        // The code position was found
+                        loCodeBreakerProgress.PercentageCompleted = 100;
+                        // The progress is reported only when it changes with regard to the last one(liOldPercentageCompleted)
+                        bakCodebreaker.ReportProgress(loCodeBreakerProgress.PercentageCompleted, loCodeBreakerProgress);
                         break;
                     }
                 }
             }
             
-           MessageBox.Show("The code has been decoded successfully.", this.Title);
+           //MessageBox.Show("The code has been decoded successfully.", this.Title);
 
         }
 
@@ -133,6 +193,10 @@ namespace BreakingCodeWithSingleMainThread
             txtOutput4.Visibility = pbValue;
             btnStart.Visibility = pbValue;
             btnHide.Visibility = pbValue;
+            pgbProgressChar1.Visibility = pbValue;
+            pgbProgressChar2.Visibility = pbValue;
+            pgbProgressChar3.Visibility = pbValue;
+            pgbProgressChar4.Visibility = pbValue;
         }
 
         private void showFishes()
