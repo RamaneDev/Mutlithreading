@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -21,6 +22,8 @@ namespace BreakingCodeWithSingleMainThread
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private readonly BackgroundWorker bakCodebreaker = new BackgroundWorker();
         // The simulated code to be broken
         private string Code;
 
@@ -29,6 +32,8 @@ namespace BreakingCodeWithSingleMainThread
      
         public MainWindow()
         {
+            bakCodebreaker.DoWork += bakCodebreaker_DoWork;
+
             InitializeComponent();
 
             // Generate a random code to be broken
@@ -64,6 +69,41 @@ namespace BreakingCodeWithSingleMainThread
             }
         }
 
+        private void bakCodebreaker_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            // This code will break the simulated code.
+            // This variable will hold a number to iterate from 1 to 65,535 - Unicode character set.
+            int i;
+            // This variable will hold a number to iterate from 0 to 3(the characters positions in the code to be broken).
+            int liCharNumber;
+            // This variable will hold a char generated from the number in i
+            char lcChar;
+            // This variable will hold the current Label control that shows the char position being decoded.
+
+            TextBlock loOutputCharCurrentLabel;
+            for (liCharNumber = 0; liCharNumber < 4; liCharNumber++)
+            {
+                loOutputCharCurrentLabel = OutputCharLabels[liCharNumber];
+                // This loop will run 65,536 times
+                for (i = 0; i <= 65535; i++)
+                {
+                    // myChar holds a Unicode char
+                    lcChar = (char)(i);
+                    // loOutputCharCurrentLabel.Text = lcChar.ToString();
+
+                    //Application.DoEvents();
+                    if (checkCodeChar(lcChar, liCharNumber))
+                    {
+                        // The code position was found
+                        break;
+                    }
+                }
+            }
+            
+           MessageBox.Show("The code has been decoded successfully.", this.Title);
+
+        }
 
         private void setFishesVisibility(Visibility pbValue)
         {             
@@ -136,35 +176,11 @@ namespace BreakingCodeWithSingleMainThread
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            // This code will break the simulated code.
-            // This variable will hold a number to iterate from 1 to 65,535 - Unicode character set.
-           int i;
-            // This variable will hold a number to iterate from 0 to 3(the characters positions in the code to be broken).
-           int liCharNumber;
-            // This variable will hold a char generated from the number in i
-           char lcChar;
-            // This variable will hold the current Label control that shows the char position being decoded.
-           
-            TextBlock loOutputCharCurrentLabel;
-            for (liCharNumber = 0; liCharNumber < 4; liCharNumber++)
-            {
-                loOutputCharCurrentLabel = OutputCharLabels[liCharNumber];
-                // This loop will run 65,536 times
-                for (i = 0; i <= 65535; i++)
-                {
-                    // myChar holds a Unicode char
-                    lcChar = (char)(i);
-                    loOutputCharCurrentLabel.Text = lcChar.ToString();
-
-                    //Application.DoEvents();
-                    if (checkCodeChar(lcChar, liCharNumber))
-                    {
-                        // The code position was found
-                        break;
-                    }
-                }
-            }
-            MessageBox.Show("The code has been decoded successfully.", this.Title);
+            // Start running the code programmed in 
+            // BackgroundWorker DoWork event handler
+            // in a new independent thread and return control to 
+            // the application's main thread
+            bakCodebreaker.RunWorkerAsync();
         }
     }
 }
