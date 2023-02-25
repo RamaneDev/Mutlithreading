@@ -43,6 +43,7 @@ namespace BreakingCodeWithSingleMainThread
             bakCodebreaker.DoWork += bakCodebreaker_DoWork;
             bakCodebreaker.ProgressChanged += bakCodebreaker_ProgressChanged;
             bakCodebreaker.WorkerReportsProgress = true;
+            bakCodebreaker.WorkerSupportsCancellation = true;
 
             InitializeComponent();
 
@@ -67,6 +68,9 @@ namespace BreakingCodeWithSingleMainThread
             OutputCharLabels.Add(txtOutput2);
             OutputCharLabels.Add(txtOutput3);
             OutputCharLabels.Add(txtOutput4);
+
+            // desable stop button
+            btnStop.IsEnabled = false;
             
             // Hide the fishes game and show the CodeBreaker
             showCodeBreaker();
@@ -127,6 +131,14 @@ namespace BreakingCodeWithSingleMainThread
                 // This loop will run 65,536 times
                 for (i = 0; i <= 65535; i++)
                 {
+                    // to cancel breaker Thread if CancellationPending = true
+
+                    if (bakCodebreaker.CancellationPending)
+                    {
+                        // The user requested to cancel the process
+                        e.Cancel = true;
+                        return;
+                    }
                     // myChar holds a Unicode char
                     lcChar = (char)(i);
                     // loOutputCharCurrentLabel.Text = lcChar.ToString();
@@ -197,6 +209,7 @@ namespace BreakingCodeWithSingleMainThread
             pgbProgressChar2.Visibility = pbValue;
             pgbProgressChar3.Visibility = pbValue;
             pgbProgressChar4.Visibility = pbValue;
+            btnStop.Visibility = pbValue;
         }
 
         private void showFishes()
@@ -244,7 +257,25 @@ namespace BreakingCodeWithSingleMainThread
             // BackgroundWorker DoWork event handler
             // in a new independent thread and return control to 
             // the application's main thread
+           
+            // Disable the Start button
+            btnStart.IsEnabled = false;
+            // Enable the Stop button
+            btnStop.IsEnabled = true;
             bakCodebreaker.RunWorkerAsync();
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            // Disable the Stop button
+            btnStop.IsEnabled = false;
+            // Enable the Start button
+            btnStart.IsEnabled = true;
+
+            //Call the CancelAsync method to cancel the 
+            // process.
+            bakCodebreaker.CancelAsync();
+
         }
     }
 }

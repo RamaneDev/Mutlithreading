@@ -17,26 +17,28 @@
         <TextBlock x:Name="txtFishGame" HorizontalAlignment="Left" Margin="494,139,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="50" Width="270" FontSize="36" FontWeight="Bold"><Run Text=" "/><Run Text="Fishes Game"/><Run Text=" "/><Run Language="en-gb" Text="!!!"/></TextBlock>
         <TextBlock x:Name="txtCodeBreaker" HorizontalAlignment="Left" Margin="80,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" Width="374" FontSize="22" FontWeight="Bold" FontFamily="Algerian"><Run Text="Code breaker single"/><Run Language="en-gb" Text=" Threaded"/></TextBlock>
 
-        <TextBlock x:Name="txtNumber1" HorizontalAlignment="Left" Margin="110,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24"><Run Language="en-gb" Text="#1"/></TextBlock>
-        <TextBlock x:Name="txtOutput1" HorizontalAlignment="Left" Margin="153,160,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
+        <TextBlock x:Name="txtNumber1" HorizontalAlignment="Left" Margin="20,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24"><Run Language="en-gb" Text="#1"/></TextBlock>
+        <TextBlock x:Name="txtOutput1" HorizontalAlignment="Left" Margin="63,160,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
 
-        <TextBlock x:Name="txtNumber2" HorizontalAlignment="Left" Margin="110,215,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" Text="#2"/>
-        <TextBlock x:Name="txtOutput2" HorizontalAlignment="Left" Margin="153,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
+        <TextBlock x:Name="txtNumber2" HorizontalAlignment="Left" Margin="20,215,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" Text="#2"/>
+        <TextBlock x:Name="txtOutput2" HorizontalAlignment="Left" Margin="63,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
 
-        <TextBlock x:Name="txtNumber3" HorizontalAlignment="Left" Margin="110,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" Text="#3"/>
-        <TextBlock x:Name="txtOutput3" HorizontalAlignment="Left" Margin="153,262,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
+        <TextBlock x:Name="txtNumber3" HorizontalAlignment="Left" Margin="20,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" Text="#3"/>
+        <TextBlock x:Name="txtOutput3" HorizontalAlignment="Left" Margin="63,262,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
 
-        <TextBlock x:Name="txtNumber4" HorizontalAlignment="Left" Margin="110,317,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" Text="#4"/>
-        <TextBlock x:Name="txtOutput4" HorizontalAlignment="Left" Margin="153,313,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
+        <TextBlock x:Name="txtNumber4" HorizontalAlignment="Left" Margin="20,317,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" Text="#4"/>
+        <TextBlock x:Name="txtOutput4" HorizontalAlignment="Left" Margin="63,313,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="36" Height="37" Width="16" FontWeight="Bold"><Run Language="en-gb" Text="*"/></TextBlock>
 
         <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="308,366,0,0" VerticalAlignment="Top" Width="126" Height="31" FontSize="18" FontWeight="Bold" FontFamily="Comic Sans MS" Click="btnStart_Click"/>
         <Button x:Name="btnHide" Content="Hide" HorizontalAlignment="Left" Margin="453,366,0,0" VerticalAlignment="Top" Width="126" Height="31" FontSize="18" FontWeight="Bold" FontFamily="Comic Sans MS" Click="btnHide_Click"/>
         <Button x:Name="btnGameOver" Content="Game Over" HorizontalAlignment="Left" Margin="600,366,0,0" VerticalAlignment="Top" Width="126" Height="31" FontSize="18" FontWeight="Bold" FontFamily="Comic Sans MS" IsDefault="True" Click="btnGameOver_Click"/>
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="98,366,0,0" VerticalAlignment="Top" Width="126" Height="31" FontSize="18" FontWeight="Bold" FontFamily="Comic Sans MS" Click="btnStop_Click"/>
 
-        <ProgressBar x:Name="pgbProgressChar1" HorizontalAlignment="Left" Height="20" Margin="187,174,0,0" VerticalAlignment="Top" Width="151"/>
-        <ProgressBar x:Name="pgbProgressChar2" HorizontalAlignment="Left" Height="20" Margin="187,226,0,0" VerticalAlignment="Top" Width="151"/>
-        <ProgressBar x:Name="pgbProgressChar3" HorizontalAlignment="Left" Height="20" Margin="187,277,0,0" VerticalAlignment="Top" Width="151"/>
-        <ProgressBar x:Name="pgbProgressChar4" HorizontalAlignment="Left" Height="20" Margin="187,327,0,0" VerticalAlignment="Top" Width="151"/>
+        <ProgressBar x:Name="pgbProgressChar1" HorizontalAlignment="Left" Height="20" Margin="97,174,0,0" VerticalAlignment="Top" Width="151"/>
+        <ProgressBar x:Name="pgbProgressChar2" HorizontalAlignment="Left" Height="20" Margin="97,226,0,0" VerticalAlignment="Top" Width="151"/>
+        <ProgressBar x:Name="pgbProgressChar3" HorizontalAlignment="Left" Height="20" Margin="97,277,0,0" VerticalAlignment="Top" Width="151"/>
+        <ProgressBar x:Name="pgbProgressChar4" HorizontalAlignment="Left" Height="20" Margin="97,327,0,0" VerticalAlignment="Top" Width="151"/>
+       
 
 
 
