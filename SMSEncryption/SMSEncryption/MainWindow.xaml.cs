@@ -25,5 +25,20 @@ namespace SMSEncryption
             InitializeComponent();
         }
 
+        private void butTest_Click(object sender, RoutedEventArgs e)
+        {
+            // The encrypted text
+            string lsEncryptedText;
+            // For each line in txtOriginalSMS TextBox
+            int lineCount = txtOriginalSMS.LineCount;
+            for (int line = 0; line < lineCount; line++)
+            {
+                lsEncryptedText = EncryptionProcedures.Encrypt(txtOriginalSMS.GetLineText(line));
+                // Append a line with the Encrypted text
+                txtEncryptedSMS.AppendText(lsEncryptedText + Environment.NewLine);
+                // Append a line with the Encrypted text decrypted to test everything is as expected
+                txtEncryptedSMS.AppendText(EncryptionProcedures.Decrypt(lsEncryptedText) + Environment.NewLine);
+            }
+        }
     }
 }
