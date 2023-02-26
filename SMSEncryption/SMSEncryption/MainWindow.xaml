@@ -15,6 +15,8 @@
         <Image x:Name="imgTextMessage" Source="/imgs/sms.png" HorizontalAlignment="Left" Height="100" Margin="665,10,0,0" VerticalAlignment="Top" Width="100"/>
         <Button x:Name="butTest" Content="Test" HorizontalAlignment="Left" Margin="484,131,0,0" VerticalAlignment="Top" BorderThickness="1,1,1,1" Height="41" Width="91" FontFamily="Times New Roman" FontWeight="Bold" FontSize="18" Click="butTest_Click"/>
         <Button x:Name="butRunInThread" Content="Run In Thread" HorizontalAlignment="Left" Margin="484,210,0,0" VerticalAlignment="Top" Height="55" Width="192" FontSize="24" FontWeight="Bold" FontFamily="Times New Roman" Click="butRunInThread_Click"/>
+        <TextBox x:Name="Name_lblNumberOfSMSEncrypted" HorizontalAlignment="Left" Height="31" Margin="431,293,0,0" TextWrapping="Wrap" Text="Number of Message Encrypted :" VerticalAlignment="Top" Width="278" FontWeight="Bold" FontStyle="Italic" FontSize="20" FontFamily="Times New Roman" BorderThickness="0,0,0,0"/>
+        <TextBox x:Name="lblNumberOfSMSEncrypted" HorizontalAlignment="Left" Height="31" Margin="665,329,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="110" FontWeight="Bold" FontStyle="Italic" FontSize="20" FontFamily="Times New Roman" BorderThickness="0,0,0,0"/>
 
     </Grid>
 </Window>
