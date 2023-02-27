@@ -24,6 +24,9 @@ namespace OldStarsFinder
         // The AutoResetEvent instances array
         private AutoResetEvent[] praoAutoResetEventArray;
 
+        //Old stars count using a lock to protect thread safety.
+        private String prsOldStarsCount = "0";
+
         public Form1()
         {
             InitializeComponent();
@@ -53,7 +56,7 @@ namespace OldStarsFinder
 
         private void ThreadOldStarsFinder(object poThreadParameter)
         {
-          
+
             // Retrieve the thread number received in object poThreadParameter
             int liThreadNumber = (int)poThreadParameter;
 
@@ -86,7 +89,15 @@ namespace OldStarsFinder
                         loBitmap.SetPixel(liCol, liRow, Color.Blue);
                         // Increase the old stars counter
                         prliOldStarsCount[liThreadNumber]++;
+
+                        lock (prsOldStarsCount)
+                        {
+                            int i = Convert.ToInt32(prsOldStarsCount);
+                            i = i + 1;
+                            prsOldStarsCount = i.ToString();
+                        }
                     }
+
                 }
             }
 
@@ -100,16 +111,16 @@ namespace OldStarsFinder
 
         private void WaitForThreadsToDie()
         {
-                     
+
             // Just wait for the threads to signal that every work 
             // item has finished
             WaitHandle.WaitAll(praoAutoResetEventArray);
-          
+
         }
 
         private void ShowBitmapWithOldStars()
         {
-          
+
             Bitmap loBitmap;
             // The starting row in each iteration
             int liStartRow = 0;
@@ -144,7 +155,7 @@ namespace OldStarsFinder
 
 
             proOriginalBitmap = new Bitmap(picStarsBitmap.Image);
-      
+
             // Create the thread list; the long list and the bitmap list
             prloThreadList = new List<Thread>(priProcessorCount);
             prliOldStarsCount = new List<long>(priProcessorCount);
@@ -184,16 +195,18 @@ namespace OldStarsFinder
 
                 //Wait here on the Thread you just created to 
                 // complete
-                prloThreadList[liThreadNumber].Join();
+                // prloThreadList[liThreadNumber].Join();
 
             }
             WaitForThreadsToDie();
             ShowBitmapWithOldStars();
+            tbCount.Text = prsOldStarsCount;
 
             TimeSpan ts = DateTime.Now - start;
 
             Debug.Print("Time: {0}", ts);
         }
+
     }
 
 }
