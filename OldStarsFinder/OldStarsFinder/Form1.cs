@@ -1,4 +1,5 @@
 using System.Drawing.Imaging;
+using static System.Windows.Forms.AxHost;
 
 namespace OldStarsFinder
 {
@@ -18,6 +19,9 @@ namespace OldStarsFinder
 
         // The original huge infrared bitmap portrait
         Bitmap proOriginalBitmap;
+
+        // The AutoResetEvent instances array
+        private AutoResetEvent[] praoAutoResetEventArray;
 
         public Form1()
         {
@@ -81,41 +85,19 @@ namespace OldStarsFinder
                     }
                 }
             }
+
+            // The thread finished its work. Signal that the work 
+            // item has finished.
+            praoAutoResetEventArray[liThreadNumber].Set();
+
         }
 
 
         private void WaitForThreadsToDie()
         {
-            // A bool flag
-            bool lbContinue = true;
-            int liDeadThreads = 0;
-            int liThreadNumber;
-            while (lbContinue)
-            {
-                for (liThreadNumber = 0; liThreadNumber < priProcessorCount; liThreadNumber++)
-                {
-                    if (prloThreadList[liThreadNumber].IsAlive)
-                    {
-                        // One of the threads is still alive, 
-                        // exit the for loop and sleep 100 
-                        // milliseconds
-                        break;
-                    }
-                    else
-                    {
-                        // Increase the dead threads count
-                        liDeadThreads++;
-                    }
-                }
-                if (liDeadThreads == priProcessorCount)
-                {
-                    // All the threads are dead, exit the while 
-                    // loop
-                    break;
-                }
-                Thread.Sleep(100);
-                liDeadThreads = 0;
-            }
+            // Just wait for the threads to signal that every work 
+            // item has finished
+            WaitHandle.WaitAll(praoAutoResetEventArray);
         }
 
         private void ShowBitmapWithOldStars()
@@ -148,6 +130,12 @@ namespace OldStarsFinder
 
         private void butFindOldStars_Click(object sender, EventArgs e)
         {
+
+            // Create the AutoResetEvent array with the number of 
+            // cores available
+            praoAutoResetEventArray = new AutoResetEvent[priProcessorCount];
+
+
             proOriginalBitmap = new Bitmap(picStarsBitmap.Image);
       
             // Create the thread list; the long list and the bitmap list
@@ -172,6 +160,11 @@ namespace OldStarsFinder
                 liHeightToAdd -= liEachBitmapHeight;
                 liStartRow += liEachBitmapHeight;
                 prloBitmapList.Add(loBitmap);
+
+                // Create a new AutoResetEvent instance for that thread with 
+                // its initial state set to false
+                praoAutoResetEventArray[liThreadNumber] = new AutoResetEvent(false);
+
                 // Add the new thread, with a parameterized start 
                 // (to allow parameters)
                 prloThreadList.Add(new Thread(new ParameterizedThreadStart(ThreadOldStarsFinder)));
