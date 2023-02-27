@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using static System.Windows.Forms.AxHost;
 
@@ -52,8 +53,11 @@ namespace OldStarsFinder
 
         private void ThreadOldStarsFinder(object poThreadParameter)
         {
+          
             // Retrieve the thread number received in object poThreadParameter
             int liThreadNumber = (int)poThreadParameter;
+
+            Debug.Print("Thread {0} start", liThreadNumber);
 
             // The pixel matrix (bitmap) row number (Y)
             int liRow;
@@ -88,6 +92,7 @@ namespace OldStarsFinder
 
             // The thread finished its work. Signal that the work 
             // item has finished.
+            Debug.Print("Thread {0} ends", liThreadNumber);
             praoAutoResetEventArray[liThreadNumber].Set();
 
         }
@@ -95,9 +100,11 @@ namespace OldStarsFinder
 
         private void WaitForThreadsToDie()
         {
+                     
             // Just wait for the threads to signal that every work 
             // item has finished
             WaitHandle.WaitAll(praoAutoResetEventArray);
+          
         }
 
         private void ShowBitmapWithOldStars()
@@ -130,7 +137,7 @@ namespace OldStarsFinder
 
         private void butFindOldStars_Click(object sender, EventArgs e)
         {
-
+            DateTime start = DateTime.Now;
             // Create the AutoResetEvent array with the number of 
             // cores available
             praoAutoResetEventArray = new AutoResetEvent[priProcessorCount];
@@ -174,9 +181,18 @@ namespace OldStarsFinder
             for (int liThreadNumber = 0; liThreadNumber < priProcessorCount; liThreadNumber++)
             {
                 prloThreadList[liThreadNumber].Start(liThreadNumber);
+
+                //Wait here on the Thread you just created to 
+                // complete
+                prloThreadList[liThreadNumber].Join();
+
             }
             WaitForThreadsToDie();
             ShowBitmapWithOldStars();
+
+            TimeSpan ts = DateTime.Now - start;
+
+            Debug.Print("Time: {0}", ts);
         }
     }
 
