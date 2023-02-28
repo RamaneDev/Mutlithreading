@@ -1,0 +1,2 @@
+In summary, a lock statement in C# is used to protect a critical section of code that accesses shared resources, 
+not the object itself.
