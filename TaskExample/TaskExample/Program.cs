@@ -6,17 +6,12 @@ namespace TaskExample
     {
         static void Main(string[] args)
         {
-            //Create the 3 Tasks.
-            Task t1 = new Task(() => WriteNumbers());
-            Task t2 = new Task(() => WriteWords());
-            Task t3 = new Task(() => WriteColors());
-            //Run the 3 Tasks.
-            t1.Start();
-            t2.Start();
-            t3.Start();
-
-            Console.ReadLine(); // here the main process is blocked to allow the tasks to execute thier statement
-                                // without this line the main process will terminate and taskes will note have time to print anything in console
+            Parallel.Invoke(
+                new Action(WriteNumbers),
+                new Action(WriteWords),
+                new Action(WriteColors)
+            );
+            Console.ReadLine();
         }
 
         static void WriteNumbers()
