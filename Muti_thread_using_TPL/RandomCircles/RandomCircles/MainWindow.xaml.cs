@@ -50,5 +50,21 @@ namespace RandomCircles
             text2.Text = tasks[1].Result.ToString();
             text3.Text = tasks[2].Result.ToString();
         }
+
+        private void btnRandomFirst_Click(object sender, RoutedEventArgs e)
+        {
+            Task<String>[] tasks = new Task<String>[3];
+            for (int i = 0; i < 3; i++)
+            {
+                tasks[i] = Task<String>.Factory.StartNew(() => Worker1());
+            }
+            //Task.WaitAll(tasks);
+            int index = Task.WaitAny(tasks); // here the main Thread will wait for 
+                                             // the first one to finish and GO ON
+                                             // there are more methode like waitAny (continue, when, continueAll...) to experiment
+                                             // see MICROSOFT REFERENCE SITE to get help.
+             text4.Text = "Task " + index.ToString() + " finished first.";
+        }
     }
 }
+

@@ -7,13 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Ellipse x:Name="Circle1" HorizontalAlignment="Left" Height="122" Margin="125,155,0,0" Stroke="Black" VerticalAlignment="Top" Width="120"/>
-        <Ellipse x:Name="Circle3" HorizontalAlignment="Left" Height="120" Margin="552,0,0,0" Stroke="Black" VerticalAlignment="Center" Width="120"/>
-        <Ellipse x:Name="Circle2" HorizontalAlignment="Center" Height="120" Stroke="Black" VerticalAlignment="Center" Width="120"/>
-        <TextBox x:Name="text1" HorizontalAlignment="Left" Margin="134,186,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Height="60"/>
-        <TextBox x:Name="text2" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="102" Height="60"/>
-        <TextBox x:Name="text3" HorizontalAlignment="Left" Margin="561,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="102" Height="60"/>
+        <Ellipse x:Name="Circle1" HorizontalAlignment="Left" Height="122" Margin="115,40,0,0" Stroke="Black" VerticalAlignment="Top" Width="120"/>
+        <Ellipse x:Name="Circle3" HorizontalAlignment="Left" Height="120" Margin="542,42,0,0" Stroke="Black" VerticalAlignment="Top" Width="120"/>
+        <Ellipse x:Name="Circle2" HorizontalAlignment="Left" Height="120" Stroke="Black" VerticalAlignment="Top" Width="120" Margin="330,42,0,0"/>
+        <TextBox x:Name="text1" HorizontalAlignment="Left" Margin="124,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Height="60"/>
+        <TextBox x:Name="text2" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Height="60" Margin="339,72,0,0"/>
+        <TextBox x:Name="text3" HorizontalAlignment="Left" Margin="551,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Height="60"/>
         <Button x:Name="btnRandomAll" Content="Random All" HorizontalAlignment="Left" Margin="69,327,0,0" VerticalAlignment="Top" Height="36" Width="100" Click="btnRandomAll_Click"/>
+        <Ellipse x:Name="Circle4" HorizontalAlignment="Center" Height="122" Margin="0,190,0,0" Stroke="Black" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="text4" HorizontalAlignment="Center" Margin="0,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="102" Height="60"/>
+        <Button x:Name="btnRandomFirst" Content="Random First" HorizontalAlignment="Left" Margin="69,276,0,0" VerticalAlignment="Top" Height="36" Width="100" Click="btnRandomFirst_Click"/>
 
     </Grid>
 </Window>
