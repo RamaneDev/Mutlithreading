@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,29 @@ namespace ParallelMath1
     {
         int[] numbers;
 
+        ConcurrentQueue<Exception> exceptions = new ConcurrentQueue<Exception>();
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void CalculateNumbers3(int i, ParallelLoopState  pls)
+        {
+            int j = numbers[i];
+            try
+            {
+                for (int k = 1; k <= 10; k++)
+                {
+                    j *= k;
+                    if (j > 5000000) throw new ArgumentException(String.Format("The value of text box {0} is {1}.", i + 1, j));
+                }
+            }
+            catch (Exception e)
+            {
+                exceptions.Enqueue(e);
+            }
+            numbers[i] = j;
         }
 
         private void CalculateNumbers(int i)
@@ -38,7 +59,7 @@ namespace ParallelMath1
             numbers[i] = j;
         }
 
-            private void btnCalculate_Click(object sender, RoutedEventArgs e)
+        private void btnCalculate_Click(object sender, RoutedEventArgs e)
         {
             numbers =new int[10];
             numbers[0] = Convert.ToInt32(tb1.Text);
@@ -51,9 +72,28 @@ namespace ParallelMath1
             numbers[7] = Convert.ToInt32(tb8.Text);
             numbers[8] = Convert.ToInt32(tb9.Text);
             numbers[9] = Convert.ToInt32(tb10.Text);
-            
-            Parallel.For(0, 10, CalculateNumbers);
-            
+
+            try
+            {
+                Parallel.For(0, 10, CalculateNumbers3);
+                
+                if (exceptions.Count > 0) throw new AggregateException(exceptions);
+            }
+            catch (AggregateException ae)
+            {
+                // This is where you can choose which exceptions to handle. 
+                foreach (var ex in ae.InnerExceptions)
+                {
+                    if (ex is ArgumentException)
+                    {
+                        tbMessages.Text += ex.Message;
+                        tbMessages.Text += "\r\n";
+                    }
+                    else
+                        throw ex;
+                }
+            }
+
             tb1.Text = numbers[0].ToString();
             tb2.Text = numbers[1].ToString();
             tb3.Text = numbers[2].ToString();
@@ -66,6 +106,22 @@ namespace ParallelMath1
             tb10.Text = numbers[9].ToString();
         }
 
-       
+        private void CalculateNumbers2(int i, ParallelLoopState pls)
+        {
+            int j = numbers[i];
+            if (i < 7)
+            {
+                for (int k = 1; k <= 10; k++)
+                {
+                    j *= k;
+                }
+                numbers[i] = j;
+            }
+            else
+            {
+                pls.Stop();
+                return;
+            }
+        }
     }
 }
