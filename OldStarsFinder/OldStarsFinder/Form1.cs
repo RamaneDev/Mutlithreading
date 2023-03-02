@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using static System.Windows.Forms.AxHost;
 
@@ -6,25 +8,15 @@ namespace OldStarsFinder
 {
     public partial class Form1 : Form
     {
-        // The number of processors or cores available in the computer for this application
-        private int priProcessorCount = Environment.ProcessorCount;
+        private int Count = 0;
 
-        // The bitmaps list
-        private List<Bitmap> prloBitmapList;
+        // Number of bitmaps to break the original into and add to 
+        // the list of bitmaps.
+        private List<Bitmap> BitmapList;
 
-        // The long list with the old stars count
-        private List<long> prliOldStarsCount;
+        //List of bitmaps to use the ParallelForEach on.
+        Bitmap OriginalBitmap;
 
-        // The threads list
-        private List<Thread> prloThreadList;
-
-        // The original huge infrared bitmap portrait
-        Bitmap proOriginalBitmap;
-
-        // The AutoResetEvent instances array
-        private AutoResetEvent[] praoAutoResetEventArray;
-
-        //Old stars count using a lock to protect thread safety.
         private String prsOldStarsCount = "0";
 
         public Form1()
@@ -54,153 +46,99 @@ namespace OldStarsFinder
         }
 
 
-        private void ThreadOldStarsFinder(object poThreadParameter)
+        private void ThreadOldStarsFinder(Bitmap loBitmap)
         {
-
-            // Retrieve the thread number received in object poThreadParameter
-            int liThreadNumber = (int)poThreadParameter;
-
-            Debug.Print("Thread {0} start", liThreadNumber);
-
-            // The pixel matrix (bitmap) row number (Y)
-            int liRow;
-
-            // The pixel matrix (bitmap) col number (X)
-            int liCol;
-
-            // The pixel color
-            Color loPixelColor;
-            // Get my bitmap part from the bitmap list
-            Bitmap loBitmap = prloBitmapList[liThreadNumber];
-            // Reset my old stars counter
-            prliOldStarsCount[liThreadNumber] = 0;
-            // Iterate through each pixel matrix (bitmap) row
+            int liRow; // The pixel matrix (bitmap)row number(Y)
+            int liCol; // The pixel matrix (bitmap)col number(X)
+            Color loPixelColor; // The pixel color
+                                // Iterate through each pixel matrix (bitmap) rows
             for (liRow = 0; liRow < loBitmap.Height; liRow++)
             {
                 // Iterate through each pixel matrix (bitmap) cols
                 for (liCol = 0; liCol < loBitmap.Width; liCol++)
                 {
-                    // Get the pixel color for liCol and liRow
+                    // Get the pixel Color for liCol and liRow
                     loPixelColor = loBitmap.GetPixel(liCol, liRow);
                     if (IsOldStar(loPixelColor))
                     {
                         // The color range corresponds to an old star
                         // Change its color to a pure blue
                         loBitmap.SetPixel(liCol, liRow, Color.Blue);
-                        // Increase the old stars counter
-                        prliOldStarsCount[liThreadNumber]++;
 
                         lock (prsOldStarsCount)
                         {
-                            int i = Convert.ToInt32(prsOldStarsCount);
+                            int i = Convert.
+                           ToInt32(prsOldStarsCount);
                             i = i + 1;
                             prsOldStarsCount = i.ToString();
                         }
                     }
-
                 }
             }
-
-            // The thread finished its work. Signal that the work 
-            // item has finished.
-            Debug.Print("Thread {0} ends", liThreadNumber);
-            praoAutoResetEventArray[liThreadNumber].Set();
-
-        }
-
-
-        private void WaitForThreadsToDie()
-        {
-
-            // Just wait for the threads to signal that every work 
-            // item has finished
-            WaitHandle.WaitAll(praoAutoResetEventArray);
-
         }
 
         private void ShowBitmapWithOldStars()
         {
 
             Bitmap loBitmap;
+
             // The starting row in each iteration
             int liStartRow = 0;
+
             // Calculate each bitmap's height
-            int liEachBitmapHeight = ((int)(proOriginalBitmap.Height / priProcessorCount)) + 1;
-            // Create a new bitmap with the whole width and 
-            // height
-            loBitmap = new Bitmap(proOriginalBitmap.Width, proOriginalBitmap.Height);
+            int liEachBitmapHeight = ((int)(OriginalBitmap.Height / Count)) + 1;
+
+            // Create a new bitmap with the whole width and height
+            loBitmap = new Bitmap(OriginalBitmap.Width, OriginalBitmap.Height);
 
             Graphics g = Graphics.FromImage((Image)loBitmap);
-            g.InterpolationMode = System.Drawing.Drawing2D.
-            InterpolationMode.HighQualityBicubic;
-            for (int liThreadNumber = 0; liThreadNumber < priProcessorCount; liThreadNumber++)
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+            for (int liThreadNumber = 0; liThreadNumber < Count; liThreadNumber++)
             {
-                // Draw each portion in its corresponding 
-                // absolute starting row
-                g.DrawImage(prloBitmapList[liThreadNumber], 0, liStartRow);
+                // Draw each portion in its corresponding absolute starting row
+                g.DrawImage(BitmapList[liThreadNumber], 0, liStartRow);
                 // Increase the starting row
                 liStartRow += liEachBitmapHeight;
             }
             // Show the bitmap in the PictureBox picStarsBitmap
             picStarsBitmap.Image = loBitmap;
+            //picStarsBitmap.Image.Save("c:\\packt\\resulting_image.png", ImageFormat.Png);
+            tbCount.Text = prsOldStarsCount;
             g.Dispose();
         }
 
         private void butFindOldStars_Click(object sender, EventArgs e)
         {
             DateTime start = DateTime.Now;
-            // Create the AutoResetEvent array with the number of 
-            // cores available
-            praoAutoResetEventArray = new AutoResetEvent[priProcessorCount];
-
-
-            proOriginalBitmap = new Bitmap(picStarsBitmap.Image);
-
-            // Create the thread list; the long list and the bitmap list
-            prloThreadList = new List<Thread>(priProcessorCount);
-            prliOldStarsCount = new List<long>(priProcessorCount);
-            prloBitmapList = new List<Bitmap>(priProcessorCount);
-            int liStartRow = 0;
-            int liEachBitmapHeight = ((int)(proOriginalBitmap.Height / priProcessorCount)) + 1;
-            int liHeightToAdd = proOriginalBitmap.Height;
+            Count = Convert.ToInt32(tbTasks.Text);
+            OriginalBitmap = new Bitmap(picStarsBitmap.Image);
+            BitmapList = new List<Bitmap>(Count);
+            int StartRow = 0;
+            int EachBitmapHeight = ((int)(OriginalBitmap.Height / Count)) + 1;
+            int HeightToAdd = OriginalBitmap.Height;
             Bitmap loBitmap;
-            // Initialize the threads
-            for (int liThreadNumber = 0; liThreadNumber < priProcessorCount; liThreadNumber++)
+            // Breakup the bitmap into a list of bitmaps.
+            for (int i = 0; i < Count; i++)
             {
-                // Just to occupy the number
-                prliOldStarsCount.Add(0);
-                if (liEachBitmapHeight > liHeightToAdd)
+                if (EachBitmapHeight > HeightToAdd)
                 {
                     // The last bitmap height perhaps is less than the other bitmaps height
-                    liEachBitmapHeight = liHeightToAdd;
+                    EachBitmapHeight = HeightToAdd;
                 }
-                loBitmap = CropBitmap(proOriginalBitmap, new Rectangle(0, liStartRow, proOriginalBitmap.Width, liEachBitmapHeight));
-                liHeightToAdd -= liEachBitmapHeight;
-                liStartRow += liEachBitmapHeight;
-                prloBitmapList.Add(loBitmap);
-
-                // Create a new AutoResetEvent instance for that thread with 
-                // its initial state set to false
-                praoAutoResetEventArray[liThreadNumber] = new AutoResetEvent(false);
-
-                // Add the new thread, with a parameterized start 
-                // (to allow parameters)
-                prloThreadList.Add(new Thread(new ParameterizedThreadStart(ThreadOldStarsFinder)));
-
+                loBitmap = CropBitmap(OriginalBitmap, new
+                Rectangle(0, StartRow, OriginalBitmap.Width, EachBitmapHeight));
+                HeightToAdd -= EachBitmapHeight;
+                StartRow += EachBitmapHeight;
+                BitmapList.Add(loBitmap);
             }
-            // Now, start the threads
-            for (int liThreadNumber = 0; liThreadNumber < priProcessorCount; liThreadNumber++)
-            {
-                prloThreadList[liThreadNumber].Start(liThreadNumber);
 
-                //Wait here on the Thread you just created to 
-                // complete
-                // prloThreadList[liThreadNumber].Join();
-
-            }
-            WaitForThreadsToDie();
+            //Iterate through the list of bitmaps with the Parallel.ForEach command.
+            // here we call Parallel.ForEach synchronously the main Thread will wait 
+            // until thre forEach loop complete
+            Parallel.ForEach(BitmapList, item => ThreadOldStarsFinder(item));
+            
             ShowBitmapWithOldStars();
-            tbCount.Text = prsOldStarsCount;
 
             TimeSpan ts = DateTime.Now - start;
 
