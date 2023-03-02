@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,8 @@ namespace ParallelMath1
         int[] numbers;
 
         ConcurrentQueue<Exception> exceptions = new ConcurrentQueue<Exception>();
+
+        long total = 0;
 
         public MainWindow()
         {
@@ -73,10 +76,28 @@ namespace ParallelMath1
             numbers[8] = Convert.ToInt32(tb9.Text);
             numbers[9] = Convert.ToInt32(tb10.Text);
 
+            Func<int, ParallelLoopState, long, long> body = (i, loop, subtotal) =>
+                                                                                    {
+                                                                                        int j = numbers[i];
+                                                                                        for (int k = 1; k <= 10; k++)
+                                                                                        {
+                                                                                            j *= k;
+                                                                                        }
+                                                                                        numbers[i] = j;
+                                                                                        subtotal += j;
+                                                                                        return subtotal;
+                                                                                    };
+
+            Action<long> localFinally = (finalResult) => Interlocked.Add(ref total, finalResult);
+
             try
             {
-                Parallel.For(0, 10, CalculateNumbers3);
-                
+                //Parallel.For(0, 10, CalculateNumbers3);
+
+                Parallel.For<long>(0, 10, () => 0, body, localFinally);
+
+                tbSum.Text = total.ToString();
+
                 if (exceptions.Count > 0) throw new AggregateException(exceptions);
             }
             catch (AggregateException ae)

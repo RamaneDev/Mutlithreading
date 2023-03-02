@@ -19,6 +19,8 @@
         <TextBox x:Name="tb10" HorizontalAlignment="Left" Margin="26,414,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="102"/>
         <Button x:Name="btnCalculate" Content="Calculate" HorizontalAlignment="Left" Height="38" Margin="26,481,0,0" VerticalAlignment="Top" Width="92" Click="btnCalculate_Click"/>
         <TextBlock x:Name="tbMessages" HorizontalAlignment="Left" Margin="185,61,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="371" Width="464"/>
+        <Label x:Name="label" Content="Sum :" HorizontalAlignment="Left" Margin="342,500,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="tbSum" HorizontalAlignment="Left" Height="26" Margin="386,500,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="94"/>
 
     </Grid>
 </Window>
