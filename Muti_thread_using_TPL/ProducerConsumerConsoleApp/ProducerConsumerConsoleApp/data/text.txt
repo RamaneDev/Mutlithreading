@@ -1,0 +1,24 @@
+
+The Pipeline design is very useful in parallel design when you can divide an 
+application up into series of tasks to be performed in such a way that each task can 
+run concurrently with other tasks. It is important that the output of each task is in 
+the same order as the input. If the order does not matter, then a parallel loop can 
+be performed. When the order matters and we don't want to wait until all items 
+have completed task A before the items start executing task B, then a Pipeline 
+implementation is perfect.
+
+Some applications that lend themselves to pipelining are video streaming, 
+compression, and encryption. In each of these examples, we need to perform a set of 
+tasks on the data and preserve the data's order, but we do not want to wait for each 
+item of data to perform a task before any of the data can perform the next task.
+
+The key class that .NET has provided for implementing this design pattern is 
+BlockingCollection of the System.Collections.Concurrent namespace. 
+The BlockingCollection class was introduced with .NET 4.5. It is a thread-safe 
+collection specifically designed for producer-consumer and Pipeline design patterns. 
+It supports concurrently adding and removing items by multiple threads to and from 
+the collection. It also has methods to add and remove that block when the collection 
+is full or empty. You can specify a maximum collection size to ensure a producing 
+task that outpaces a consuming task does not make the queue too large. It supports 
+cancellation tokens. Finally, it supports enumerations so that you can use the 
+foreach loop when processing items of the collection.
