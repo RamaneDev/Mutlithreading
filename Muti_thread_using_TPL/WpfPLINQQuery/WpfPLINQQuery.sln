@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33414.496
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPLINQQuery", "WpfPLINQQuery\WpfPLINQQuery.csproj", "{BBCBF1B7-1743-41C5-AA53-697B204A41CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBCBF1B7-1743-41C5-AA53-697B204A41CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBCBF1B7-1743-41C5-AA53-697B204A41CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBCBF1B7-1743-41C5-AA53-697B204A41CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBCBF1B7-1743-41C5-AA53-697B204A41CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C558E4F8-02F4-450C-895B-77D0085651AA}
+	EndGlobalSection
+EndGlobal
