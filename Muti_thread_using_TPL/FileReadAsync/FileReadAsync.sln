@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33414.496
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileReadAsync", "FileReadAsync\FileReadAsync.csproj", "{6FA53B6B-2797-43C5-8532-0FE852AAE659}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FA53B6B-2797-43C5-8532-0FE852AAE659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA53B6B-2797-43C5-8532-0FE852AAE659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA53B6B-2797-43C5-8532-0FE852AAE659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA53B6B-2797-43C5-8532-0FE852AAE659}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F636A413-DE0D-4D67-9284-BD20BE94D4F1}
+	EndGlobalSection
+EndGlobal
