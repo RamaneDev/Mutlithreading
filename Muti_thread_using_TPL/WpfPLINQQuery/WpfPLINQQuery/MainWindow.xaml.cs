@@ -36,7 +36,7 @@ namespace WpfPLINQQuery
            
             //Method 1 - This uses a ForAll method and an empty 
             //delegate method.
-            ParallelQuery<int> PQ1 = from num in collection1.AsParallel()
+            ParallelQuery<int> PQ1 = from num in collection1.AsParallel().AsOrdered()
                                      where num % 5 == 0
                                      select num;
             
@@ -62,7 +62,7 @@ namespace WpfPLINQQuery
             
             // Method 2 - Use a standard ToArray method to return 
             //the results.
-            int[] PQ2 = (from num in collection2.AsParallel()
+            int[] PQ2 = (from num in collection2.AsParallel().AsOrdered()
                          where num % 10 == 0
                          select num).ToArray();
             // Use a standard foreach loop and merge the results.
@@ -83,7 +83,7 @@ namespace WpfPLINQQuery
             sw3.Start();
 
             // Method 3 - Use the LINQ standard method format.
-            ParallelQuery<int> PQ3 = collection3.AsParallel().Where(n => n % 10 == 0).Select(n => n);
+            ParallelQuery<int> PQ3 = collection3.AsParallel().AsOrdered().Where(n => n % 10 == 0).Select(n => n);
             // Use a standard foreach loop and merge the results.
             foreach (int i in PQ3)
             {
