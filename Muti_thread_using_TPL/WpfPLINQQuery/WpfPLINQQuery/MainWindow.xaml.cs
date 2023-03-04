@@ -33,10 +33,13 @@ namespace WpfPLINQQuery
             //Start the timer.
             Stopwatch sw1 = new Stopwatch();
             sw1.Start();
-           
+
             //Method 1 - This uses a ForAll method and an empty 
             //delegate method.
-            ParallelQuery<int> PQ1 = from num in collection1.AsParallel().AsOrdered()
+            ParallelQuery<int> PQ1 = from num in collection1
+                                     .AsParallel()
+                                     .AsOrdered()
+                                     .WithMergeOptions(ParallelMergeOptions.NotBuffered)
                                      where num % 5 == 0
                                      select num;
             
