@@ -39,7 +39,7 @@ namespace WpfPLINQQuery
             ParallelQuery<int> PQ1 = from num in collection1
                                      .AsParallel()
                                      .AsOrdered()
-                                     .WithMergeOptions(ParallelMergeOptions.AutoBuffered)
+                                     .WithMergeOptions(ParallelMergeOptions.FullyBuffered)
                                      where num % 5 == 0
                                      select num;
             
