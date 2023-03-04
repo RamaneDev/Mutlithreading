@@ -18,6 +18,7 @@
         <Button x:Name="btnMethod3" Content="Execute Method 3" HorizontalAlignment="Left" Margin="586,37,0,0" VerticalAlignment="Top" Height="32" Width="168" Click="btnMethod3_Click"/>
         <ListBox x:Name="lb3" HorizontalAlignment="Left" Height="269" Margin="586,86,0,0" VerticalAlignment="Top" Width="168"/>
         <TextBox x:Name="tbTime3" HorizontalAlignment="Left" Height="29" Margin="586,375,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="168"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Height="32" Margin="269,38,0,0" VerticalAlignment="Top" Width="58" Click="btnCancel_Click"/>
 
     </Grid>
 </Window>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,7 @@ namespace WpfPLINQQuery
     /// </summary>
     public partial class MainWindow : Window
     {
+        CancellationTokenSource cs = new CancellationTokenSource();
         public MainWindow()
         {
             InitializeComponent();
@@ -39,7 +41,6 @@ namespace WpfPLINQQuery
             ParallelQuery<int> PQ1 = from num in collection1
                                      .AsParallel()
                                      .AsOrdered()
-                                     .WithMergeOptions(ParallelMergeOptions.FullyBuffered)
                                      where num % 5 == 0
                                      select num;
             
@@ -57,17 +58,32 @@ namespace WpfPLINQQuery
 
         private void btnMethod2_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<int> collection2 = Enumerable.Range(10, 10000);
+            IEnumerable<int> collection2 = Enumerable.Range(10, 500000);
             
             //Start the timer.
             Stopwatch sw2 = new Stopwatch();
             sw2.Start();
+
+            int[] PQ2;
+
+            try
+            {
+                // Method 2 - Use a standard ToArray method to return 
+                //the results.
+                PQ2 = (from num in collection2
+                             .AsParallel()
+                             .AsOrdered()
+                             .WithCancellation(cs.Token)
+                             where num % 10 == 0
+                             select num).ToArray();
+            } 
+            catch (OperationCanceledException ex)
+            {
+                lb2.Items.Clear();
+                lb2.Items.Add(ex.Message);
+                return;
+            }            
             
-            // Method 2 - Use a standard ToArray method to return 
-            //the results.
-            int[] PQ2 = (from num in collection2.AsParallel().AsOrdered()
-                         where num % 10 == 0
-                         select num).ToArray();
             // Use a standard foreach loop and merge the results.
             foreach (int i in PQ2)
             {
@@ -99,6 +115,11 @@ namespace WpfPLINQQuery
 
         static void DoWork(int i)
         {
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            cs.Cancel();
         }
     }
 }
