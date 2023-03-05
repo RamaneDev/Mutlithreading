@@ -1,57 +1,95 @@
 ﻿using System;
 using System.IO;
+using System.Numerics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileReadAsync
 {
     internal class Program
     {
         static byte[] buffer2;
+        static string path = "C:\\Users\\mesri\\OneDrive\\Documents\\Mutlithreading\\Muti_thread_using_TPL\\FileReadAsync\\FileReadAsync\\data\\text.txt";
         static void Main(string[] args)
         {
-            
-            buffer2 = new byte[5000];
 
-            string path = "C:\\Users\\mesri\\OneDrive\\Documents\\Mutlithreading\\Muti_thread_using_TPL\\FileReadAsync\\FileReadAsync\\data\\text.txt";
-            // Open a file for reading
-            FileStream FS = new FileStream(path, FileMode.Open, FileAccess.Read);
+            Console.WriteLine("The ID of the Main method: {0}. \r\n", Thread.CurrentThread.ManagedThreadId);
 
-            // Begin reading data asynchronously from the file
-           // byte[] buffer = new byte[1024];
-            Console.WriteLine("To start async read press return.");
-            
+            //Wait on the user to begin the reading of the //file.
             Console.ReadLine();
-            IAsyncResult result = FS.BeginRead(buffer2, 0, buffer2.Length, AsyncCallbackMethod, FS);
-            // Work being done while we wait on the async //read.
-           
-            Console.WriteLine("Doing Some other work here. \r\n");
-       
+
+            // Create task, start it, and wait for it to //finish.
+            Task task = new Task(ProcessFileAsync);
+            task.Start();
+            task.Wait();
+
+            //Wait for a return before exiting.
             Console.ReadLine();
         }
 
-        static void AsyncCallbackMethod(IAsyncResult ar)
+        static async void ProcessFileAsync()
         {
-            byte[] buffer = new byte[5000];
-            // Get the file stream object and end the asynchronous read operation
-            FileStream FS = (FileStream)ar.AsyncState;
-            int bytesRead = FS.EndRead(ar);
+            // Write out the id of the thread of the task //that will call the async method to read the file.
+            Console.WriteLine("The thread id of the ProcessFileAsync method: {0}. \r\n", Thread.CurrentThread.ManagedThreadId);
 
-            // Make sure to close the FileStream.
-            FS.Close();
+            // Start the HandleFile method.
+            Task<String> task = ReadFileAsync(path);
 
-            //Now, write out the results.
-            Console.WriteLine("Read {0} bytes from the file. \r\n", bytesRead);
-           
-            Console.WriteLine("Is the async read completed - {0}. \r\n", ar.IsCompleted.ToString());
-           
-            Console.WriteLine("numbre of bytes read from stream : ", bytesRead);
 
-            Console.WriteLine(BitConverter.ToString(buffer2));
+            // Perform some other work.
+            Console.WriteLine("Do some other work. \r\n");
+            Console.WriteLine("Proceed with waiting on the read to complete. \r\n");
 
-            // Begin reading data asynchronously from the file again
-            //buffer = new byte[1024];
-            //fileStream.BeginRead(buffer, 0, buffer.Length, AsyncCallbackMethod, fileStream);   // we call recall if needed to read more bytes
+
+            Console.ReadLine();
+
+            // Wait for the task to finish reading the //file.
+            String results = await task;
+            Console.WriteLine("Number of characters read are: {0}. \r\n", results.Length);
+
+
+            Console.WriteLine("The file contents are: {0}. \r\n", results);
+        }
+
+
+
+        static async Task<String> ReadFileAsync(string file)
+        {
+            // Write out the id of the thread that is //performing the read.
+            Console.WriteLine("The thread id of the ReadFileAsync method: {0}. \r\n", Thread.CurrentThread.ManagedThreadId);
+            Console.WriteLine("Begin Reading file asynchronously. \r\n");
+
+            // Read the specified file.
+            String DataRead = "";
+            using (StreamReader reader = new StreamReader(file))
+            {
+                string character = await reader.ReadToEndAsync();
+                //Build string of data read.
+                DataRead = DataRead + character;
+                //Slow down the process.
+                Thread.Sleep(10000);
+
+            }
+
+            Console.WriteLine("Done Reading File asynchronously. \r\n");
+            return DataRead;
         }
     }
+
+
+
+
+       
+
+
+
+
+
+
+
+
+
+    
+
 }
